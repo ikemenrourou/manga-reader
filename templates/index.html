@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>漫画阅读器</title>
+
+    <!-- Manifest 文件，用于 PWA 全屏显示 -->
+    <link rel="manifest" href="/static/manifest.json">
+    
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/icon-180.png">
+
+    <!-- iOS Safari 支持的全屏模式 -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+            /* 背景相关的CSS代码 */
+            background: rgb(2, 0, 36);
+            background: linear-gradient(137deg, rgba(2, 0, 36, 1) 0%, rgba(0, 52, 96, 1) 26%, rgba(22, 67, 109, 1) 55%, rgba(173, 151, 142, 1) 100%);
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        /* 磨砂效果 */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            /* 半透明白色遮罩层 */
+            backdrop-filter: blur(10px);
+            /* 磨砂模糊效果 */
+            z-index: -1;
+            /* 保证内容在背景之上 */
+        }
+
+        .search-bar {
+            width: 100%;
+            max-width: 400px;
+            /* 限制搜索框最大宽度为400px，避免过长 */
+            margin: 5px auto;
+            /* 自动左右边距使其居中，20px上下边距 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.208);
+            padding: 10px;
+            border-radius: 12px;
+            /* 添加圆角矩形效果 */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            /* 添加阴影，提升视觉效果 */
+            position: relative;
+            /* 搜索框将正常随页面滚动 */
+        }
+
+        /* 搜索框和按钮的样式 */
+        input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 20px 0 0 20px;
+            /* 为输入框左边添加圆角 */
+            outline: none;
+        }
+
+        button {
+            padding: 8px 15px;
+            font-size: 14px;
+            border: none;
+            background-color: #66ccff;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 20px 20px 0;
+            /* 为按钮右边添加圆角 */
+        }
+
+        button:hover {
+            background-color: #06F867;
+        }
+
+
+        input[type="text"] {
+            flex: 1;
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            outline: none;
+        }
+
+        button {
+            padding: 8px 15px;
+            font-size: 14px;
+            border: none;
+            background-color: #66ccff;
+            color: white;
+            cursor: pointer;
+            border-radius: 0 5px 5px 0;
+        }
+
+        button:hover {
+            background-color: #06F867;
+        }
+
+        .comic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 0 40px;
+            /* 设置左右内边距，40px可以根据需求调整 */
+            width: calc(100% - 80px);
+            /* 减去内边距宽度，使内容不溢出 */
+            margin-top: 15px;
+            /* 给搜索栏预留空间 */
+        }
+
+        /* 针对 iPad 或宽度小于 1200px 的屏幕，移除 width 限制 */
+        @media (max-width: 1200px) {
+            .comic-grid {
+                width: 100%;
+                /* 取消 calc，使用全宽 */
+                padding: 0 10px;
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                /* 动态调整列宽 */
+            }
+        }
+
+        .comic {
+            text-align: center;
+            background-color: #0000004d;
+            padding: 10px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .comic:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .comic img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .comic-title {
+            margin-top: 10px;
+            font-size: 14px;
+            word-wrap: break-word;
+            /* 允许单词换行 */
+            overflow: visible;
+            max-width: 100%;
+            white-space: normal;
+            color: #ffffff;
+        }
+
+        .pagination {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .pagination {
+            width: 100%;
+            max-width: 400px;
+            margin: 15px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.208);
+            padding: 5px;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        .pagination a:hover {
+            background-color: #66ccff;
+            color: white;
+        }
+
+        .pagination .disabled {
+            pointer-events: none;
+            color: #b9b9b9;
+
+        }
+
+        .page-number {
+            margin: 0 10px;
+            font-size: 14px;
+            color: rgb(255, 255, 255);
+            /* 设置 "第X页" 的文字颜色 */
+        }
+
+        .pagination form {
+            display: inline-block;
+            margin-left: 20px;
+            color: rgb(255, 255, 255);
+            /* 设置 "跳至第X页" 的文字颜色 */
+        }
+
+        .pagination input[type="number"] {
+            padding: 5px;
+            font-size: 14px;
+            width: 50px;
+            text-align: center;
+        }
+
+        .comic-item {
+            flex: 1 1 calc(14.28% - 10px);
+            /* 每个漫画项占14.28%的宽度，减去10px的间距 */
+            margin: 5px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 搜索栏 -->
+    <div class="search-bar">
+        <form action="/" method="GET" style="display: flex; width: 100%;">
+            <input type="text" name="query" placeholder="搜索漫画..." value="{{ query }}" />
+            <button type="submit">搜索</button>
+        </form>
+    </div>
+
+    <!-- 漫画展示 -->
+    <div class="comic-grid">
+        {% for comic in comics %}
+        <div class="comic">
+            <a href="/read/{{ comic.title }}">
+                <img src="{{ comic.cover_url }}" alt="{{ comic.title }} 封面">
+            </a>
+            <div class="comic-title">{{ comic.title | truncate(50) }}</div> <!-- 漫画标题显示最多50个字符 -->
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- 分页按钮及页码显示 -->
+    <div class="pagination">
+        <!-- 上一页按钮 -->
+        {% if page > 1 %}
+        <a href="/?query={{ query }}&page={{ page - 1 }}">上一页</a>
+        {% else %}
+        <span class="disabled">上一页</span>
+        {% endif %}
+
+        <!-- 页码显示 -->
+        <span class="page-number">第 {{ page }} 页</span>
+
+        <!-- 下一页按钮 -->
+        {% if has_next_page %}
+        <a href="/?query={{ query }}&page={{ page + 1 }}">下一页</a>
+        {% else %}
+        <span class="disabled">下一页</span>
+        {% endif %}
+
+        <!-- 页码跳转输入框 -->
+        <form action="/" method="GET">
+            <input type="hidden" name="query" value="{{ query }}">
+            跳至第 <input type="number" name="page" min="1" value="{{ page }}" style="width: 50px;"> 页
+            <button type="submit">跳转</button>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ title }}</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: rgb(2, 0, 36);
+            background: linear-gradient(145deg, rgba(2, 0, 36, 1) 0%, rgba(0, 52, 96, 1) 26%, rgba(22, 67, 109, 1) 55%, rgba(173, 151, 142, 1) 100%);
+            background-attachment: fixed;
+            /* 让背景固定 */
+            overflow-x: hidden;
+            /* 禁止水平滚动 */
+        }
+
+
+        img {
+            display: block;
+            margin: 0;
+            /* 移除图片之间的间隙 */
+            width: 100vw;
+            /* 图片宽度为视口宽度的100% */
+            height: auto;
+            /* 自动调整高度 */
+            object-fit: contain;
+            /* 保持宽高比，图片内容完全显示 */
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        img.show {
+            opacity: 1;
+            transform: scale(1.05);
+            /* 悬停时轻微放大 */
+        }
+
+        .manga-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 100%;
+        }
+
+        .manga-page {
+            width: 100%;
+            max-width: 1400px;
+            /* 您可以根据需要调整这个值 */
+            height: auto;
+            object-fit: contain;
+        }
+
+        .title {
+            font-size: 1.5em;
+            color: #ffffff;
+            text-align: center;
+            margin: 20px auto;
+            /* 确保标题块自动水平居中 */
+            background: rgba(33, 33, 33, 0.377);
+            border-radius: 15px;
+            padding: 5px 10px;
+            display: flex;
+            justify-content: center;
+            /* 水平居中 */
+            align-items: center;
+            /* 垂直居中 */
+            max-width: 80%;
+            /* 限制标题块宽度，让它居中 */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="title">{{ title }}</div> <!-- 添加漫画名 -->
+    <div class="manga-container">
+        {% for image in images %}
+        <img id="manga{{ loop.index0 }}" src="{{ image }}" class="manga-page" />
+        {% endfor %}
+    </div>
+
+    <script>
+        let isScrolling = false;  // 标记是否正在滚动
+        let scrollSpeed = 2;       // 每帧滚动的像素数
+        let animationFrameId = null; // requestAnimationFrame 的句柄
+
+        // 平滑滚动函数
+        function smoothScroll() {
+            window.scrollBy(0, scrollSpeed);  // 每帧向下滚动
+
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                stopScroll();  // 如果到底部，停止滚动
+            } else if (isScrolling) {
+                animationFrameId = requestAnimationFrame(smoothScroll);  // 下一帧继续滚动
+            }
+        }
+
+        // 启动滚动
+        function startScroll() {
+            if (!isScrolling) {
+                isScrolling = true;
+                smoothScroll();
+            }
+        }
+
+        // 停止滚动
+        function stopScroll() {
+            isScrolling = false;
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);  // 取消滚动
+                animationFrameId = null;
+            }
+        }
+
+        // 监听双击事件
+        document.body.addEventListener('dblclick', function () {
+            if (isScrolling) {
+                stopScroll();
+            } else {
+                startScroll();
+            }
+        });
+
+        // 防止窗口大小调整时滚动异常
+        window.addEventListener('resize', function () {
+            if (isScrolling) stopScroll();
+        });
+    </script>
+</body>
+
+</html>

@@ -16,7 +16,9 @@
 
 ## 安装
 
-. 安装依赖：
+1 下载源码：
+
+2 安装依赖：
    ```
    pip install -r requirements.txt
    ```

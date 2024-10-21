@@ -3,7 +3,7 @@
 - **这是使用AI写的一个非常简单的漫画阅读器 Web 应用程序，使用 Flask 构建。**
 - 截止2天前，楼主没有看过1秒钟编程视频，代码编辑器用的还是记事本，纯靠gpt老师
 - （AI主要用的是 4O 和 copilot，claude3.5，极少数 o1）
-- 
+
 ## 便携版
 
 你可以从 [Releases 页面](https://github.com/ikemenrourou/manga-reader/releases) 下载最新的发行版。

@@ -1,8 +1,14 @@
 # 漫画/图片 web阅读器
 
-**这是使用AI写的一个非常简单的漫画阅读器 Web 应用程序，使用 Flask 构建。**
-截止2天前，楼主没有看过1秒钟编程视频，代码编辑器用的还是记事本，纯靠gpt老师
-（AI主要用的是 4O 和 copilot，claude3.5，极少数 o1）
+- **这是使用AI写的一个非常简单的漫画阅读器 Web 应用程序，使用 Flask 构建。**
+- 截止2天前，楼主没有看过1秒钟编程视频，代码编辑器用的还是记事本，纯靠gpt老师
+- （AI主要用的是 4O 和 copilot，claude3.5，极少数 o1）
+- 
+## 便携版
+
+你可以从 [Releases 页面](https://github.com/ikemenrourou/manga-reader/releases) 下载最新的发行版。
+下载rar文件，解压缩，修改config.ini文件填入泥的漫画路径，
+运行exe。
 
 ## 截图
 
@@ -24,7 +30,7 @@
 
 ## 使用方法
 
-0.修改config.ini文件，comics_folder = 填入存放漫画/图片文件的文件夹路径，例如 D:\Comics 或 P:\漫画（注意=后面有空格）
+0. 修改config.ini文件，comics_folder = 填入存放漫画/图片文件的文件夹路径，例如 D:\Comics 或 P:\漫画（注意=后面有空格）
 
 1. 运行应用程序：
    ```

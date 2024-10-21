@@ -16,13 +16,7 @@
 
 ## 安装
 
-1. 克隆此仓库：
-   ```
-   git clone https://github.com/ikemenrourou/manga-viewer.git
-   cd manga-viewer
-   ```
-
-2. 安装依赖：
+. 安装依赖：
    ```
    pip install -r requirements.txt
    ```

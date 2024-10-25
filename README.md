@@ -4,7 +4,7 @@
 - 截止2天前，楼主没有看过1秒钟编程视频，代码编辑器用的还是记事本，纯靠gpt老师
 - （AI主要用的是 4O 和 copilot，claude3.5，极少数 o1）
 
-## 便携版
+## 便携版安装
 
 你可以从 [Releases 页面](https://github.com/ikemenrourou/manga-reader/releases) 下载最新的发行版。
 下载rar文件，解压缩，修改config.ini文件填入泥的漫画路径，
@@ -14,7 +14,7 @@
 
 ![首页截图](截图/test.jpg)
 
-## 安装
+## 源码安装
 
 1 下载源码：
 
